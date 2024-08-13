@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import preactLogo from '../../assets/preact.svg';
+// import preactLogo from '../../assets/preact.svg';
 import './style.css';
 
 const ApiTester = () => {
@@ -16,7 +16,12 @@ const ApiTester = () => {
 	return (
 		<section>
 			<div>
-				<button onClick={handleByNameClick} type="button">Get By Name</button>
+				<button
+					onClick={handleByNameClick}
+					type="button"
+					style={{backgroundColor: "plum", color: "black", fontWeight: "bold", border: "none", borderRadius: "3px", padding: "1rem"}}>
+					Get By Name
+				</button>
 				<p>{dishName}</p>
 			</div>
 		</section>
