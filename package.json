@@ -1,0 +1,19 @@
+{
+  "name": "koa-preact-google-run-1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "firebase": "^10.12.5",
+    "koa": "^2.15.3",
+    "koa-router": "^12.0.1",
+    "koa-static": "^5.0.0",
+    "nodemon": "^3.1.4"
+  }
+}
