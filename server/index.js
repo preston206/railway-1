@@ -39,7 +39,7 @@ const { MongoClient, ObjectId } = require("mongodb");
 // const googleAnalytics = getAnalytics(firebaseApp);
 
 // connect to DB
-const dbUrl = process.env.DATABASE_URL;
+const dbUrl = process.env.MONGO_URL;
 const dbClient = new MongoClient(dbUrl);
 const dbName = process.env.DATABASE_NAME;
 
