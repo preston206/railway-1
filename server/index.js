@@ -66,12 +66,22 @@ server.use(serve(path.join(__dirname, '../client/dist')));
 // Your API routes would go here
 router
   .get('/api/test', async (ctx) => {
-    const mainDishQuery = query(documents, where('dishType', '==', 'main'));
-    const mainDishDocs = await getDocs(mainDishQuery, limit(1));
-    console.log('---MAIN DISH RESULT', mainDishDocs);
-    console.log('---DOC', mainDishDocs.docs[0].data());
+    // const mainDishQuery = query(documents, where('dishType', '==', 'main'));
+    // const mainDishDocs = await getDocs(mainDishQuery, limit(1));
+    // console.log('---MAIN DISH RESULT', mainDishDocs);
+    // console.log('---DOC', mainDishDocs.docs[0].data());
 
     // mainDishDocs.forEach(doc => console.log('---DOC', doc.data()));
+
+    let doc;
+    try {
+      doc = await database.findOne({ "name": "Noodles" });
+    }
+    catch (error) {
+      console.log('---MONGO DB FIND ERROR 1', error);
+    }
+
+    console.log('---DOC', doc);
 
     ctx.status = 200;
     ctx.body = { message: 'Hello from Koa!' };
