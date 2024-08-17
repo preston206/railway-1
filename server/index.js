@@ -1,39 +1,61 @@
+require("dotenv").config();
 const Koa = require('koa');
 const Router = require('koa-router');
 const serve = require('koa-static');
+const { koaBody } = require('koa-body');
 const path = require('path');
-const { initializeApp } = require("firebase/app");
-const {
-  getFirestore,
-  doc,
-  collection,
-  query,
-  where,
-  limit,
-  getDoc,
-  getDocs,
-  updateDoc
-} = require('firebase/firestore/lite');
-// import { getAnalytics } from "firebase/analytics";
+const { MongoClient, ObjectId } = require("mongodb");
+// const { initializeApp } = require("firebase/app");
+// const {
+//   getFirestore,
+//   doc,
+//   collection,
+//   query,
+//   where,
+//   limit,
+//   getDoc,
+//   getDocs,
+//   updateDoc
+// } = require('firebase/firestore/lite');
+// // import { getAnalytics } from "firebase/analytics";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCk7MJfTdiNpvKk9XKwDU380KQ09Ossst8",
-  authDomain: "project-koa-preact.firebaseapp.com",
-  projectId: "project-koa-preact",
-  storageBucket: "project-koa-preact.appspot.com",
-  messagingSenderId: "944419246591",
-  appId: "1:944419246591:web:05f9e94247e58e636897ca",
-  measurementId: "G-E9BKYYV5YG"
-};
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCk7MJfTdiNpvKk9XKwDU380KQ09Ossst8",
+//   authDomain: "project-koa-preact.firebaseapp.com",
+//   projectId: "project-koa-preact",
+//   storageBucket: "project-koa-preact.appspot.com",
+//   messagingSenderId: "944419246591",
+//   appId: "1:944419246591:web:05f9e94247e58e636897ca",
+//   measurementId: "G-E9BKYYV5YG"
+// };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const firebaseDb = getFirestore(firebaseApp);
-const documents = collection(firebaseDb, 'documents');
+// const firebaseApp = initializeApp(firebaseConfig);
+// const firebaseDb = getFirestore(firebaseApp);
+// const documents = collection(firebaseDb, 'documents');
 
 // console.log('---DB', firebaseDb);
 // console.log('---COLLECTION', documents);
 
 // const googleAnalytics = getAnalytics(firebaseApp);
+
+// connect to DB
+const url = process.env.DATABASE_URL;
+const client = new MongoClient(url);
+const dbName = process.env.DATABASE_NAME;
+
+let database;
+
+client.connect()
+  .then(conn => {
+    console.log('---connected to the database server');
+    // console.log('---CONNECTION', conn);
+    return conn.db(dbName).collection('TestCollection');
+  })
+  .then(db => {
+    console.log('---connected to the database')
+    database = db;
+  })
+  .catch(error => console.log('---CONN ERROR', error))
 
 const server = new Koa();
 const router = new Router();
