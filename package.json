@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon --env-file=.env index.js",
-    "start": "node --env-file=.env index.js"
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "firebase": "^10.12.5",
     "koa": "^2.15.3",
     "koa-body": "^6.0.1",
