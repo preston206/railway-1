@@ -1,4 +1,3 @@
-require("dotenv").config();
 const Koa = require('koa');
 const Router = require('koa-router');
 const serve = require('koa-static');
@@ -38,6 +37,8 @@ const { MongoClient, ObjectId } = require("mongodb");
 
 // const googleAnalytics = getAnalytics(firebaseApp);
 
+console.log('---ENV', process.env.NODE_ENV);
+
 // connect to DB
 const dbUrl = process.env.MONGO_URL;
 const dbClient = new MongoClient(dbUrl);
@@ -62,6 +63,8 @@ const router = new Router();
 
 // Serve static files
 server.use(serve(path.join(__dirname, '../client/dist')));
+
+server.use(koaBody());
 
 // Your API routes would go here
 router
@@ -100,26 +103,28 @@ router
     console.log('---GET ALL PRIVATE DISHES FOR USER REQ PARAMS AUTHOR', ctx.params.author);
     console.log('---GET ALL PRIVATE DISHES FOR USER REQ PARAMS TYPE', ctx.params.type);
 
-    const privateDishesQuery = query(documents, where('dishType', '==', 'main'), where('authorName', '==', 'Homer Simpson'));
-    const privateDishesDocs = await getDocs(privateDishesQuery);
+    // const privateDishesQuery = query(documents, where('dishType', '==', 'main'), where('authorName', '==', 'Homer Simpson'));
+    // const privateDishesDocs = await getDocs(privateDishesQuery);
     // console.log('---PRIVATE DISH RESULT', privateDishesDocs);
     // console.log('---DOC', privateDishesDocs.docs[0].data());
-    console.log('---PRIVATE DISHES DOCS', privateDishesDocs.docs);
+    // console.log('---PRIVATE DISHES DOCS', privateDishesDocs.docs);
 
     // privateDishesDocs.forEach(doc => console.log('---DOC', doc.data()));
 
     ctx.status = 200;
     ctx.body = { ctx_param_author: ctx.params.author, ctx_param_type: ctx.params.type };
+    // ctx.body = { message: 'Hello from Koa!' };
   })
   .get('/api/publicDishes/:type', async (ctx) => {
     console.log('---GET ALL PUBLIC DISHES REQ PARAMS', ctx.params.type);
 
-    const publicDishesQuery = query(documents, where('dishType', '==', 'main'));
-    const publicDishesDocs = await getDocs(publicDishesQuery);
+    // const publicDishesQuery = query(documents, where('dishType', '==', 'main'));
+    // const publicDishesDocs = await getDocs(publicDishesQuery);
 
     ctx.status = 200;
     // ctx.body = { dishes: publicDishesDocs.docs };
-    ctx.body = publicDishesDocs.docs;
+    // ctx.body = publicDishesDocs.docs;
+    ctx.body = { message: 'Hello from Koa!' };
   })
   .post('/api/dish', async (ctx) => {
     // const body = JSON.parse(ctx.request.body);
