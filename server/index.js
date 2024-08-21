@@ -1,3 +1,4 @@
+require("dotenv").config();
 const Koa = require('koa');
 const Router = require('koa-router');
 const serve = require('koa-static');
@@ -40,7 +41,7 @@ const { MongoClient, ObjectId } = require("mongodb");
 console.log('---ENV', process.env.NODE_ENV);
 
 // connect to DB
-const dbUrl = process.env.MONGO_URL;
+const dbUrl = process.env.NODE_ENV === "development" ? process.env.MONGO_PUBLIC_URL : process.env.MONGO_URL;
 const dbClient = new MongoClient(dbUrl);
 const dbName = process.env.DATABASE_NAME;
 
@@ -50,10 +51,11 @@ dbClient.connect()
   .then(conn => {
     console.log('---connected to the database server');
     // console.log('---CONNECTION', conn);
-    return conn.db(dbName).collection('TestCollection');
+    return conn.db(dbName).collection('documents');
   })
   .then(db => {
     console.log('---connected to the database')
+    // console.log('---DB', db);
     database = db;
   })
   .catch(error => console.log('---CONN ERROR', error))
