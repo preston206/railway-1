@@ -99,7 +99,7 @@ router
 
     let doc;
     try {
-      doc = await collection.findOne({ "name": "noodles" });
+      doc = await collectionDocuments.findOne({ "name": "noodles" });
     }
     catch (error) {
       console.log('---MONGO DB FIND ERROR 1', error);
