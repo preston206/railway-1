@@ -45,20 +45,39 @@ const dbUrl = process.env.NODE_ENV === "development" ? process.env.MONGO_PUBLIC_
 const dbClient = new MongoClient(dbUrl);
 const dbName = process.env.DATABASE_NAME;
 
-let database;
+console.log('---DB URL', dbUrl);
+
+// let database, collection;
+let collectionDocuments; // collection name: 'documents'
 
 dbClient.connect()
-  .then(conn => {
-    console.log('---connected to the database server');
-    // console.log('---CONNECTION', conn);
-    return conn.db(dbName).collection('documents');
-  })
+  .then(conn => conn)
+  .then(client => client.db(dbName))
   .then(db => {
-    console.log('---connected to the database')
-    // console.log('---DB', db);
-    database = db;
+    // database = db;
+    collectionDocuments = db.collection('documents');
+    console.log('---connected to the database server and database');
   })
-  .catch(error => console.log('---CONN ERROR', error))
+  .catch(error => console.error('---CONNECTION ERROR: ', error))
+
+// const connectToDatabase = async () => {
+//   try {
+//     await dbClient.connect();
+//     console.log('---connected to the database server');
+//     database = dbClient.db(dbName);
+//     console.log('---connected to the database')
+//     // collection = db.collection('documents');
+//   } catch (error) {
+//     console.error('Error connecting to database:', error);
+//     throw error; // Re-throw the error to handle it in the calling function
+//   }
+
+//   return database;
+// }
+
+// connectToDatabase()
+//   .then(db => collection = db.collection('documents'))
+//   .catch(error => console.error("Connection Error 2: ", error));
 
 const server = new Koa();
 const router = new Router();
@@ -80,7 +99,7 @@ router
 
     let doc;
     try {
-      doc = await database.findOne({ "name": "Noodles" });
+      doc = await collection.findOne({ "name": "noodles" });
     }
     catch (error) {
       console.log('---MONGO DB FIND ERROR 1', error);
