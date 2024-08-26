@@ -46,6 +46,7 @@ const dbClient = new MongoClient(dbUrl);
 const dbName = process.env.DATABASE_NAME;
 
 console.log('---DB URL', dbUrl);
+console.log('---DB NAME', dbName);
 
 // let database, collection;
 let collectionDocuments; // collection name: 'documents'
