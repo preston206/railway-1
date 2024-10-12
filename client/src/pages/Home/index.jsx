@@ -1,49 +1,25 @@
 import { useEffect, useState } from 'preact/hooks';
-// import preactLogo from '../../assets/preact.svg';
+import GeneralApiTester from '../../components/api-testers/general';
+import DishByNameApiTester from '../../components/api-testers/dishByName';
 import './style.css';
-
-const ApiTester = () => {
-
-	const [dishName, setDishName] = useState();
-
-	const handleByNameClick = () => {
-		fetch('/api/dishByName/lasagna')
-			.then(response => response.json())
-			.then(data => setDishName(data.ctx_param))
-			.catch(error => console.error('GET BY NAME ERROR', error))
-	}
-
-	return (
-		<section>
-			<div>
-				<button
-					onClick={handleByNameClick}
-					type="button"
-					style={{backgroundColor: "plum", color: "black", fontWeight: "bold", border: "none", borderRadius: "3px", padding: "1rem"}}>
-					Get By Name
-				</button>
-				<p>{dishName}</p>
-			</div>
-		</section>
-	)
-}
 
 export function Home() {
 
-	useEffect(() => {
-		fetch('/api/publicDishes/main')
-			.then(response => response.json())
-			.then(data => {
-				console.log('---DATA', data);
-				// const dishes = data.map(item => item.document.data());
-				// console.log('---DISHES', dishes);
-			})
-			.catch(error => console.error('GET ALL PUBLIC DISHES ERROR', error))
-	}, [])
+	// useEffect(() => {
+	// 	fetch('/api/publicDishes/main')
+	// 		.then(response => response.json())
+	// 		.then(data => {
+	// 			console.log('---DATA', data);
+	// 			// const dishes = data.map(item => item.document.data());
+	// 			// console.log('---DISHES', dishes);
+	// 		})
+	// 		.catch(error => console.error('GET ALL PUBLIC DISHES ERROR', error))
+	// }, [])
 
 	return (
-		<div class="home">
-			<ApiTester />
+		<div class="container">
+			<GeneralApiTester />
+			<DishByNameApiTester />
 		</div>
 	);
 }

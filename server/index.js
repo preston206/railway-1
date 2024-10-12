@@ -57,7 +57,7 @@ dbClient.connect()
   .then(db => {
     // database = db;
     collectionDocuments = db.collection('documents');
-    console.log('---connected to the database server and database');
+    console.log('---Connected to the database server and database');
   })
   .catch(error => console.error('---CONNECTION ERROR: ', error))
 
@@ -100,21 +100,33 @@ router
 
     let doc;
     try {
-      doc = await collectionDocuments.findOne({ "name": "test" });
+      doc = await collectionDocuments.findOne({ "name": "ranch chicken" });
     }
     catch (error) {
-      console.log('---MONGO DB FIND ERROR 1', error);
+      console.log('---(api/test/) MONGO DB FIND ERROR', error);
     }
 
     console.log('---DOC', doc);
 
     ctx.status = 200;
-    ctx.body = { message: 'Hello from Koa!' };
+    ctx.body = { document: doc };
   })
   .get('/api/dishByName/:name', async (ctx) => {
     console.log('---GET BY DISH NAME REQ PARAMS', ctx.params.name);
+
+    let doc;
+    try {
+      doc = await collectionDocuments.findOne({ "name": ctx.params.name.toLowerCase() });
+    }
+    catch (error) {
+      console.log('---(api/test/) MONGO DB FIND ERROR', error);
+    }
+
+    console.log('---DOC', doc);
+
     ctx.status = 200;
-    ctx.body = { ctx_param: ctx.params.name };
+    // ctx.body = { ctx_param: ctx.params.name };
+    ctx.body = doc ? { document: doc } : { document: {error: 'Unable to find that dish.'}};
   })
   .get('/api/dishById/:id', async (ctx) => {
     console.log('---GET BY DISH ID REQ PARAMS', ctx.params.id);
