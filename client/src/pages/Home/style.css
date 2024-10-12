@@ -1,4 +1,45 @@
-img {
+.container {
+	display: flex;
+	justify-content: center;
+	/* align-items: center; */
+	gap: 1rem;
+	height: 200px;
+}
+
+.api-tester {
+	min-height: 180px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	gap: 1rem;
+}
+
+/* .api-tester--dish-by-name {
+	display: flex;
+	flex-direction: column;
+} */
+
+.api-tester--dish-by-name input {
+	height: 24px;
+}
+
+.api-tester button {
+	background-color: plum;
+	color: black;
+	font-weight: bold;
+	border: none;
+	border-radius: 3px;
+	padding: 1rem;
+	min-width: 160px;
+}
+
+.api-tester .result {
+	height: 24px;
+	margin: 0;
+	text-transform: capitalize;
+}
+
+/* img {
 	margin-bottom: 1.5rem;
 }
 
@@ -44,4 +85,4 @@ img:hover {
 	.resource:hover {
 		border: 1px solid #bbb;
 	}
-}
+} */
