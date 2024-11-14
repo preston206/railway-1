@@ -88,7 +88,9 @@ server.use(serve(path.join(__dirname, '../client/dist')));
 
 server.use(koaBody());
 
-// Your API routes would go here
+// API routes
+// TODO: maybe add cts.status for try\catch error block
+// TODO: maybe instead of doc condition, move error msg into try\catch error block
 router
   .get('/api/test', async (ctx) => {
     // const mainDishQuery = query(documents, where('dishType', '==', 'main'));
@@ -103,13 +105,13 @@ router
       doc = await collectionDocuments.findOne({ "name": "ranch chicken" });
     }
     catch (error) {
-      console.log('---(api/test/) MONGO DB FIND ERROR', error);
+      console.log('---(api/test) MONGO DB FIND ERROR: ', error);
     }
 
     console.log('---DOC', doc);
 
     ctx.status = 200;
-    ctx.body = { document: doc };
+    ctx.body = doc ? { document: doc } : { document: {error: 'Unable to find that dish.'}};
   })
   .get('/api/dishByName/:name', async (ctx) => {
     console.log('---GET BY DISH NAME REQ PARAMS', ctx.params.name);
@@ -119,7 +121,7 @@ router
       doc = await collectionDocuments.findOne({ "name": ctx.params.name.toLowerCase() });
     }
     catch (error) {
-      console.log('---(api/test/) MONGO DB FIND ERROR', error);
+      console.log('---(api/dishByName) MONGO DB FIND ERROR: ', error);
     }
 
     console.log('---DOC', doc);
@@ -130,11 +132,34 @@ router
   })
   .get('/api/dishById/:id', async (ctx) => {
     console.log('---GET BY DISH ID REQ PARAMS', ctx.params.id);
+
+    let doc;
+    try {
+      doc = await collectionDocuments.findOne({ "_id": new ObjectId(ctx.params.id) });
+    }
+    catch (error) {
+      console.log('---(api/dishById) MONGO DB FIND ERROR: ', error);
+    }
+
     ctx.status = 200;
-    ctx.body = { ctx_param: ctx.params.id };
+    ctx.body = doc ? { document: doc } : { document: {error: 'Unable to find that dish.'}};
   })
-  .get('/api/privateDishes/:author/:type', async (ctx) => {
-    console.log('---GET ALL PRIVATE DISHES FOR USER REQ PARAMS AUTHOR', ctx.params.author);
+  .get('/api/dishesByUsername/:username', async (ctx) => {
+    console.log('---GET BY DISH USERNAME REQ PARAMS', ctx.params.username);
+
+    let docs;
+    try {
+      docs = await collectionDocuments.find({ "username": ctx.params.username.toLowerCase() }).toArray();
+    }
+    catch (error) {
+      console.log('---(api/dishByUsername) MONGO DB FIND ERROR: ', error);
+    }
+
+    ctx.status = 200;
+    ctx.body = docs ? { documents: docs } : { documents: {error: 'Unable to find any dishes by that username.'}};
+  })
+  .get('/api/privateDishes/:username/:type', async (ctx) => {
+    console.log('---GET ALL PRIVATE DISHES FOR USER REQ PARAMS USERNAME', ctx.params.username);
     console.log('---GET ALL PRIVATE DISHES FOR USER REQ PARAMS TYPE', ctx.params.type);
 
     // const privateDishesQuery = query(documents, where('dishType', '==', 'main'), where('authorName', '==', 'Homer Simpson'));
@@ -161,11 +186,140 @@ router
     ctx.body = { message: 'Hello from Koa!' };
   })
   .post('/api/dish', async (ctx) => {
+    // console.log('---POST REQ BODY 1', ctx.request.body);
     // const body = JSON.parse(ctx.request.body);
-    // console.log('---POST REQ BODY', body);
+    const body = ctx.request.body; // JSON.parse not needed when header used in frontend post req
+    console.log('---POST REQ BODY', body);
+
+    // const dish = {
+    //   name: "fried chicken",
+    //   username: "lisasimpson"
+    // }
+
+    let doc;
+    try {
+      doc = await collectionDocuments.insertOne(body);
+    }
+    catch (error) {
+      console.log('---(api/dish) MONGO DB POST ERROR: ', error);
+    }
 
     ctx.status = 201;
-    ctx.body = { message: 'document created' };
+    // ctx.body = { message: 'document created' };
+    ctx.body = doc ? { document: doc } : { document: {error: 'Unable to create.'}};
+  })
+  .post('/api/dishes', async (ctx) => {
+    // console.log('---POST REQ BODY 1', ctx.request.body);
+    // const body = JSON.parse(ctx.request.body);
+    const {username, account_id, dishCount, ...rest} = ctx.request.body;
+    // const dishesData = Object.entries(rest);
+    const dishesData = rest;
+
+    // console.log('---POST REQ USER', username);
+    // console.log('---POST REQ ACCT', account_id);
+    // console.log('---POST REQ REST', rest);
+    console.log('---POST REQ DISH COUNT', dishCount);
+
+    // console.log('---POST REQ REST ENTRIES', dishesData);
+    console.log('---POST REQ DISHES OBJ', dishesData);
+
+
+    // const dishTypes = dishesData.filter(d => d[0].includes('type'));
+    // console.log('---POST DISH TYPES', dishTypes);
+    // const dishCount = dishTypes.length;
+    // console.log('---POST DISH COUNT', dishCount);
+
+    const dishes = [];
+    const loopLimit = dishCount;
+
+    for (let index = 1; index <= loopLimit; index++) {
+      const dish = {
+        username,
+        account_id
+      };
+
+      dish.type = dishesData[`dish_${index}_type`];
+      dish.name = dishesData[`dish_${index}_name`];
+
+      dishes.push(dish);
+    }
+
+    console.log('---POST DISHES', dishes);
+
+    // for(const entry in body) {
+    //   console.log(`${entry}: ${body[entry]}`);
+    // }
+
+    // const dish = {
+    //   name: "fried chicken",
+    //   username: "lisasimpson"
+    // }
+
+    let docs;
+    try {
+      docs = await collectionDocuments.insertMany(dishes);
+    }
+    catch (error) {
+      console.log('---(api/dishes) MONGO DB POST ERROR: ', error);
+    }
+
+    // console.log('---POST MULTI DISH RESPONSE', docs);
+
+    ctx.status = 201;
+    // ctx.body = { documents: {message: 'documents created'} };
+    ctx.body = docs ? { documents: docs } : { documents: {error: 'Unable to create.'}};
+  })
+  .delete('/api/dish/:id', async (ctx) => {
+    // console.log('---POST REQ BODY 1', ctx.request.body);
+    // const body = JSON.parse(ctx.request.body);
+
+    console.log('---DELETE DISH BY ID REQ PARAMS', ctx.params.id);
+
+    let doc;
+    try {
+      doc = await collectionDocuments.deleteOne({ "_id": new ObjectId(ctx.params.id) });
+    }
+    catch (error) {
+      console.log('---(api/deleteDishById) MONGO DB DELETE ERROR: ', error);
+    }
+
+    // console.log('---DELETE DISH RESPONSE', doc);
+
+    ctx.status = 200;
+    // ctx.body = { document: {doc: 'dish deleted'} };
+    ctx.body = doc ? { document: doc } : { document: {error: 'Unable to delete.'}};
+  })
+  .put('/api/dish/:id', async (ctx) => {
+    console.log('---POST REQ BODY', ctx.request.body);
+    // const body = JSON.parse(ctx.request.body);
+
+
+    let doc;
+    try {
+      doc = await collectionDocuments.updateOne(
+        { "_id": new ObjectId(ctx.params.id) },
+        {$set: ctx.request.body}
+      );
+    }
+    catch (error) {
+      console.log('---(api/updateDishById) MONGO DB DELETE ERROR: ', error);
+    }
+
+    // console.log('---UPDATE DOC', doc);
+
+
+    // await db.collection('inventory').updateOne(
+    //   { item: 'paper' },
+    //   {
+    //     $set: { 'size.uom': 'cm', status: 'P' },
+    //     $currentDate: { lastModified: true }
+    //   }
+    // );
+
+
+
+    ctx.status = 200;
+    ctx.body = doc ? { document: doc } : { document: {error: 'Unable to update.'}};
   })
   .post('/api/account', async (ctx) => {
     // const body = JSON.parse(ctx.request.body);
