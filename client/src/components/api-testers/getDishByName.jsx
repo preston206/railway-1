@@ -1,24 +1,25 @@
 // @ts-nocheck
 import { useState } from "preact/hooks";
 
-const DishByNameApiTester = () => {
+const GetDishByNameApiTester = () => {
 
-	const [dishName, setDishName] = useState();
+	const [username, setUsername] = useState();
 
 	const handleByNameClick = () => {
     const input = document.querySelector("#by_name_input");
     console.log('---INPUT VAL', input.value);
-		
+
     if (input.value) {
       fetch(`/api/dishByName/${input.value}`)
 			.then(response => response.json())
 			.then(data => {
         if (data.document.error) {
-          setDishName(data.document.error)
+          setUsername(data.document.error)
         }
         else {
-          setDishName(data.document.name)
+          setUsername(data.document.username)
         }
+        document.querySelector('[data-result--dish-by-name]').classList.add('result-active')
       })
 			.catch(error => console.error('GET BY NAME ERROR', error))
     }
@@ -33,9 +34,9 @@ const DishByNameApiTester = () => {
       >
         Get By Name
       </button>
-      <p class="result">{dishName}</p>
+      <p class="result" data-result--dish-by-name>{`user: ${username}`}</p>
 		</article>
 	)
 }
 
-export default DishByNameApiTester;
+export default GetDishByNameApiTester;

@@ -1,16 +1,68 @@
+* {
+	box-sizing: border-box;
+}
+
 .container {
 	display: flex;
-	justify-content: center;
-	/* align-items: center; */
+	justify-content: flex-start;
+	align-items: flex-start;
 	gap: 1rem;
 	height: 200px;
+	padding: 60px 60px 0;
+}
+
+.container h2 {
+	margin-right: 80px;
+	margin-top: 0;
+}
+
+.container--post,
+.container--update {
+	height: 550px;
+}
+
+.container--post form,
+.container--update form {
+	width: 300px;
+}
+
+.container--post form input,
+.container--post form textarea,
+.container--post form button,
+.container--update form input,
+.container--update form textarea,
+.container--update form button {
+	width: 100%;
+}
+
+.container--post form button,
+.container--update form button {
+	margin-top: 15px;
+}
+
+.type-container {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 10px;
+	width: fit-content;
+}
+
+.type-heading {
+	margin: 0 16px 0 0;
+	font-weight: 700;
+}
+
+.container--post label:not(.type-label),
+.container--update label:not(.type-label) {
+	display: block;
 }
 
 .api-tester {
 	min-height: 180px;
 	display: flex;
 	flex-direction: column;
-	justify-content: flex-end;
+	/* justify-content: flex-end; */
 	gap: 1rem;
 }
 
@@ -19,8 +71,12 @@
 	flex-direction: column;
 } */
 
-.api-tester--dish-by-name input {
+.api-tester input {
 	height: 24px;
+}
+
+#general_test_input {
+	visibility: hidden;
 }
 
 .api-tester button {
@@ -34,9 +90,29 @@
 }
 
 .api-tester .result {
+	visibility: hidden;
 	height: 24px;
 	margin: 0;
 	text-transform: capitalize;
+}
+
+.api-tester .result.result-active {
+	visibility: visible;
+}
+
+/* .api-tester [data-result--dishes-by-username].result-active {
+	display: flex;
+} */
+
+.api-tester [data-result--dishes-by-username] {
+	max-width: 100%;
+	display: flex;
+	gap: 1rem;
+}
+
+.api-tester [data-result--dishes-by-username] p {
+	white-space: nowrap;
+	margin-top: 0;
 }
 
 /* img {

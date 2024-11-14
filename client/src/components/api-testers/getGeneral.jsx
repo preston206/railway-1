@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 
-const GeneralApiTester = () => {
+const GetGeneralApiTester = () => {
 
 	const [result, setResult] = useState();
 
@@ -9,22 +9,29 @@ const GeneralApiTester = () => {
 			.then(response => response.json())
 			.then(data => {
         console.log('---GENERAL API TESTER - DATA', data.document);
-        setResult(data.document.name)
+				if (data.document.error) {
+          setResult(data.document.error)
+        }
+        else {
+					setResult(data.document.name)
+				}
+				document.querySelector('[data-result--general-test]').classList.add('result-active')
       })
 			.catch(error => console.error('GENERAL API TESTER ERROR', error));
 	}
 
 	return (
 		<article class="api-tester">
+			<input type="text" id="general_test_input" />
       <button
         onClick={handleGeneralClick}
         type="button"
       >
         General API Tester
       </button>
-      <p class="result">{result}</p>
+      <p class="result" data-result--general-test>{result}</p>
 		</article>
 	)
 }
 
-export default GeneralApiTester;
+export default GetGeneralApiTester;
